@@ -1,0 +1,23 @@
+.guillotine-window {
+  position: relative;
+  overflow: hidden;
+}
+
+.guillotine-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.guillotine-canvas > * {
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
