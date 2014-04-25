@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <title>jQuery Guillotine plugin</title>
+  <link href='css/jquery.guillotine.css' media='all' rel='stylesheet'>
+  <link href='css/example.css' media='all' rel='stylesheet'>
+</head>
+<body>
+  <div id='content'>
+    <h1>Guillotine example</h1>
+    <a id='github' href='https://github.com/matiasgagliano/guillotine' target='_blank'>
+       https://github.com/matiasgagliano/guillotine
+    </a>
+
+    <div class='frame'>
+      <img id='sample_picture' src='http://lorempixel.com/600/480/city'>
+    </div>
+
+    <div id='controls'>
+      <button id='rotate_left'  type='button' title='Rotate left'> &lt; </button>
+      <button id='zoom_out'     type='button' title='Zoom out'> - </button>
+      <button id='fit'          type='button' title='Fit image'> [ ]  </button>
+      <button id='zoom_in'      type='button' title='Zoom in'> + </button>
+      <button id='rotate_right' type='button' title='Rotate right'> &gt; </button>
+    </div>
+
+    <ul id='data'>
+      <div class='column'>
+        <li>x: <span id='x'></span></li>
+        <li>y: <span id='y'></span></li>
+      </div>
+      <div class='column'>
+        <li>width:  <span id='w'></span></li>
+        <li>height: <span id='h'></span></li>
+      </div>
+      <div class='column'>
+        <li>scale: <span id='scale'></span></li>
+        <li>angle: <span id='angle'></span></li>
+      </div>
+    </ul>
+  </div>
+
+  <script src='http://code.jquery.com/jquery-1.11.0.min.js'></script>
+  <script src='js/jquery.guillotine.min.js'></script>
+  <script type='text/javascript'>
+    jQuery(function() {
+      var picture = $('#sample_picture');
+      picture.on('load', function(){
+        // Initialize plugin (with custom event)
+        picture.guillotine({eventOnChange: 'guillotinechange'});
+
+        // Display inital data
+        var data = picture.guillotine('getData');
+        for(var k in data) { $('#'+k).html(data[k]); }
+
+        // Bind button actions
+        $('#rotate_left').click(function(){ picture.guillotine('rotateLeft'); });
+        $('#rotate_right').click(function(){ picture.guillotine('rotateRight'); });
+        $('#fit').click(function(){ picture.guillotine('fit'); });
+        $('#zoom_in').click(function(){ picture.guillotine('zoomIn'); });
+        $('#zoom_out').click(function(){ picture.guillotine('zoomOut'); });
+
+        // Update data on change
+        picture.on('guillotinechange', function(event, data, action) {
+          data.scale = parseFloat(data.scale.toFixed(2));
+          for(var k in data) { $('#'+k).html(data[k]); }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
