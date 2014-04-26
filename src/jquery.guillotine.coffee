@@ -155,7 +155,7 @@ class Guillotine
     if el.prop('tagName') is 'IMG'
       # Helper image (full size image)
       # Assumes the target image already existed and that it's cached.
-      # It's up to the user to instanciate the plugin after the target is loaded.
+      # It's up to the user to instantiate the plugin after the target is loaded.
       img = document.createElement('img')
       img.setAttribute('src', el.attr('src'))
       # Notice: width and height properties hold the dimensions even
