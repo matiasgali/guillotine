@@ -1,9 +1,9 @@
 {
   "name": "guillotine",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Guillotine",
-  "description": "jQuery plugin to crop images within an area, allowing to drag (touch support), zoom and rotate.",
-  "keywords": [ "image", "crop", "drag", "zoom", "fit", "center", "rotate", "touch" ],
+  "description": "Crop images within an area (fully responsive), allowing to drag (touch support), zoom and rotate.",
+  "keywords": [ "touch", "responsive", "fluid", "image", "crop", "drag", "zoom", "fit", "center", "rotate" ],
   "author": { "name": "Matías Gagliano" },
   "licenses": [
     {

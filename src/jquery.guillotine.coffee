@@ -1,5 +1,5 @@
 ###
- * jQuery Guillotine Plugin v1.0.0
+ * jQuery Guillotine Plugin v1.1.0
  * http://matiasgagliano.github.com/guillotine/
  *
  * Copyright 2014, Matías Gagliano.
@@ -59,7 +59,7 @@ isTouch = (e) -> e.type.search('touch') > -1
 isPointerEventCompatible = -> ('MSPointerEvent' in window)
 
 
-# validEvent()
+# validEvent(event)
 #   Whether the event is a valid action to start dragging or not.
 #   Override the function so it checks display type only the first time.
 validEvent = (e) ->
@@ -72,7 +72,7 @@ validEvent = (e) ->
   validEvent(e)
 
 
-# getCursorPosition()
+# getCursorPosition(event)
 #   Get the position of the cursor when the event is triggered.
 #   Override the function so it checks display type only the first time.
 getCursorPosition = (e) ->
@@ -115,6 +115,15 @@ canTransform = ->
   canTransform()
 
 
+# hardwareAccelerate(element)
+#   Force CSS3 hardware acceleration.
+hardwareAccelerate = (el) ->
+  $(el).css
+    '-webkit-perspective':          1000
+    'perspective':                  1000
+    '-webkit-backface-visibility':  'hidden'
+    'backface-visibility':          'hidden'
+
 
 # ______________________________
 #
@@ -124,21 +133,23 @@ canTransform = ->
 class Guillotine
   constructor: (element, options) ->
     # Build options
-    # Data attributes (scoped by pluginName, e.g. 'data-guillotine-width')
-    # override options, and options override defaults.
-    @op = $.extend true, {}, defaults, options, $.data(@, pluginName)
+    # The data attribute override options, and options override defaults.
+    # ( data-guillotine='{"width": 640, "height": 480}' )
+    @op = $.extend true, {}, defaults, options, $(element).data(pluginName)
+
+    # Cache
+    @enabled = true
     @zoomInFactor = 1 + @op.zoomStep
     @zoomOutFactor = 1 / @zoomInFactor
-    @enabled = true
-    @angle = 0
+    [@width, @height, @left, @top, @angle] = [0, 0, 0, 0, 0]
 
     # Transformation instructions
     @data = {scale: 1, angle: 0, x: 0, y: 0, w: @op.width, h: @op.height}
 
     # Markup
     @_wrap(element)
-    if @el.offsetWidth < @op.width or @el.offsetHeight < @op.height
-      @_fit() and @_center()
+    @_fit() and @_center() if @width < 1 or @height < 1
+    hardwareAccelerate(@$el)
 
     # Events
     @$el.on events.start, @_start
@@ -151,7 +162,7 @@ class Guillotine
   _wrap: (element) =>
     el = $(element)
 
-    # Get original dimensions
+    # Get image's real dimensions
     if el.prop('tagName') is 'IMG'
       # Helper image (full size image)
       # Assumes the target image already existed and that it's cached.
@@ -165,11 +176,19 @@ class Guillotine
       # In case of mad experiments (SVGs, canvas, etc.).
       [width, height] = [el.width(), el.height()]
 
+    # Canvas
+    ## Fullsize image dimensions relative to the restrictions.
+    [@width, @height] = [width/@op.width, height/@op.height]
     canvas = $('<div>').addClass('guillotine-canvas')
-    canvas.css width: width, height: height, top: 0, left: 0
+    canvas.css width: @width*100+'%', height: @height*100+'%', top: 0, left: 0
     canvas = el.wrap(canvas).parent()
+
+    # Guillotine (window)
+    ## Responsive with fixed aspect ratio.
+    ## ('padding-top' as a percentage refers to the WIDTH of the containing block)
+    paddingTop = @op.height/@op.width * 100 + '%'
     guillotine = $('<div>').addClass('guillotine-window')
-    guillotine.css width: @op.width, height: @op.height
+    guillotine.css width: '100%', height: 'auto', 'padding-top': paddingTop
     guillotine = canvas.wrap(guillotine).parent()
 
     # Cache (DOM objects and their jQuery equivalents)
@@ -190,7 +209,7 @@ class Guillotine
     return unless @enabled and validEvent(e)
     e.preventDefault()
     e.stopImmediatePropagation()
-    @p = getCursorPosition(e)     # Cursor position before moving (dragging)
+    @p = getCursorPosition(e)         # Cursor position before moving (dragging)
     @_bind()
 
 
@@ -220,84 +239,88 @@ class Guillotine
     dy = p.y - @p.y                    # Difference (cursor movement) on Y axes
     @p = p                             # Update cursor position
 
+    # When dragging it isn't crucial to avoid every malformed 'top' or 'left'
+    # styles caused by scientific notation on @left or @top.
+    # Not using 'toFixed' here to make dragging as fast as possible.
+
     if dx != 0
-      offsetLeft = @canvas.offsetLeft
-      # Remaining space to the left if moving right (dx > 0) or viceversa.
-      gap = - offsetLeft
-      gap = @gllt.offsetWidth - (offsetLeft + @canvas.offsetWidth) if dx < 0
-      # Horizontal offset
-      dx = gap if Math.abs(dx) > Math.abs(gap)
-      offsetLeft += dx
-      @canvas.style.left = offsetLeft + 'px'
-      @data.x = - offsetLeft
+      dx = dx / @gllt.clientWidth      # dx relative to the width of the window
+      if dx > 0                        # If moving right
+        dx = -@left if dx > -@left
+      else                             # If moving left (dx < 0)
+        right = -(@width+@left-1)      # Right margin (%)
+        dx = right if dx < right
+      @left += dx
+      @canvas.style.left = @left * 100 + '%'
+      @data.x = Math.round -@left * @op.width
 
     if dy != 0
-      offsetTop = @canvas.offsetTop
-      # Remaining space to the top if moving down (dy > 0) or viceversa.
-      gap = - offsetTop
-      gap = @gllt.offsetHeight - (offsetTop + @canvas.offsetHeight) if dy < 0
-      # Vertical offset
-      dy = gap if Math.abs(dy) > Math.abs(gap)
-      offsetTop += dy
-      @canvas.style.top = offsetTop + 'px'
-      @data.y = - offsetTop
+      dy = dy / @gllt.clientHeight     # dy relative to the height of the window
+      if dy > 0                        # If moving down
+        dy = -@top if dy > -@top
+      else                             # If moving up (dy < 0)
+        bottom = -(@height+@top-1)     # Bottom margin (%)
+        dy = bottom if dy < bottom
+      @top += dy
+      @canvas.style.top = @top * 100 + '%'
+      @data.y = Math.round -@top * @op.height
 
 
   _zoom: (factor) =>
     return if factor <= 0 or factor == 1
-    [width, height] = [@canvas.offsetWidth, @canvas.offsetHeight]
+    [w, h] = [@width, @height]
 
     # Zoom
-    [scaledWidth, scaledHeight] = [width * factor, height * factor]
-    if scaledWidth > @op.width and scaledHeight > @op.height
-      @canvas.style.width = scaledWidth + 'px'
-      @canvas.style.height = scaledHeight + 'px'
+    if w * factor > 1 and h * factor > 1
+      @width *= factor
+      @height *= factor
+      # (use toFixed to prevent scientific notation on the strings)
+      @canvas.style.width = (@width * 100).toFixed(2) + '%'
+      @canvas.style.height = (@height * 100).toFixed(2) + '%'
       @data.scale *= factor
     else
       @_fit()
-    [newWidth, newHeight] = [@canvas.offsetWidth, @canvas.offsetHeight]
+      factor = @width / w
 
     # Keep same center when possible
-    # (Keep vertical center, fixed bottom or fixed top)
-    top = @canvas.offsetTop + (height - newHeight) / 2
-    top = @canvas.offsetTop + (height - newHeight) if top + newHeight < @op.height
-    top = 0 if top > 0
-    # (Keep horizontal center, fixed right or fixed left)
-    left = @canvas.offsetLeft + (width - newWidth) / 2
-    left = @canvas.offsetLeft + (width - newWidth) if left + newWidth < @op.width
-    left = 0 if left > 0
-    @canvas.style.top = top + 'px'
-    @canvas.style.left = left + 'px'
-    @data.x = - left
-    @data.y = - top
+    @left -= w*(factor-1)/2                             # Same horizontal center
+    @left  = 1 - @width       if @left + @width < 1     # Keep on right edge
+    @left  = 0                if @left > 0              # Keep on left edge
+    @top  -= h*(factor-1)/2                             # Same vertical center
+    @top   = 1 - @height      if @top + @height < 1     # Keep on bottom edge
+    @top   = 0                if @top > 0               # Keep on top edge
 
-    # Adjust element's 'translation' within the canvas
-    @_transform()
+    # (use toFixed to prevent scientific notation on the strings)
+    @canvas.style.left = (@left * 100).toFixed(2) + '%'
+    @canvas.style.top = (@top * 100).toFixed(2) + '%'
+    @data.x = Math.round -@left * @op.width
+    @data.y = Math.round -@top * @op.height
 
 
-  # Adjast the element (canvas) to the guillotine's edges keeping aspect ratio.
+  # Adjast the element (canvas) to the edges of the window keeping aspect ratio.
   _fit: =>
-    [w, h] = [@canvas.offsetWidth, @canvas.offsetHeight]
-    ratio = h / w
-    if ratio > @op.height / @op.width    # Relatively higher
-      width = @op.width
-      height = @op.width * ratio
-    else                                  # Relatively wider
-      width = @op.height / ratio
-      height = @op.height
-    @canvas.style.width = width + 'px'
-    @canvas.style.height = height + 'px'
-    @_transform()  # Adjust element's 'translation' within the canvas
-    @data.scale *= width / w
+    prevWidth = @width
+    relativeRatio = @height / @width
+    if relativeRatio > 1                      # => canvasH/canvasW > glltH/glltW
+      @width = 1
+      @height = relativeRatio
+    else
+      @width = 1 / relativeRatio
+      @height = 1
+    # (use toFixed to prevent scientific notation on the strings)
+    @canvas.style.width = (@width * 100).toFixed(2) + '%'
+    @canvas.style.height = (@height * 100).toFixed(2) + '%'
+    @data.scale *= @width / prevWidth
 
 
   _center: =>
-    top = - (@canvas.offsetHeight - @op.height) / 2
-    left = - (@canvas.offsetWidth - @op.width) / 2
-    @canvas.style.top =  top + 'px'
-    @canvas.style.left =  left + 'px'
-    @data.x = - left
-    @data.y = - top
+    @left = (1 - @width) / 2
+    @top  = (1 - @height) / 2
+    # (use toFixed to prevent scientific notation on the strings)
+    @canvas.style.left = (@left * 100).toFixed(2) + '%'
+    @canvas.style.top = (@top * 100).toFixed(2) + '%'
+    @data.x = Math.round -@left * @op.width
+    @data.y = Math.round -@top * @op.height
 
 
   _rotate: (angle) =>
@@ -307,32 +330,38 @@ class Guillotine
     @angle = (@angle + angle) % 360
     @angle = 360 + @angle if @angle < 0
 
-    # Switch canvas dimensions
-    width = @canvas.style.width
-    @canvas.style.width = @canvas.style.height
-    @canvas.style.height = width
+    # Different dimensions?
+    if (angle % 180 isnt 0)
+      # Switch canvas dimensions (as percentages)
+      #
+      # canvasWidth = @width * glltWidth; canvasHeight = @height * glltHeigth
+      # To make canvasWidth = canvasHeight (to switch dimensions):
+      # => newWidth * glltWidth = @height * glltHeight
+      # => newWidth = @height * glltHeight / glltWidth
+      # => newWidth = @height * glltRatio
+      #
+      glltRatio = @op.height / @op.width
+      [@width, @height] = [@height * glltRatio, @width / glltRatio]
+      if @width >= 1 and @height >= 1
+        @canvas.style.width = @width * 100 + '%'
+        @canvas.style.height = @height * 100 + '%'
+      else
+        @_fit()
 
-    # Adjust the element's dimensions
-    # (As percentage so it adjusts automatically when the canvas is zoomed)
-    [w, h] = [@canvas.offsetWidth,  @canvas.offsetHeight]
-    ratio = if (@angle % 180 is 0) then 1 else h / w
-    @el.style.width = ratio * 100 + '%'
-    @el.style.height = 100 / ratio + '%'
+    # Adjast element's (image) dimensions inside the canvas
+    [w, h] = [1, 1]
+    if (@angle % 180 isnt 0)
+      canvasRatio = @height / @width * glltRatio
+      [w, h] = [canvasRatio, 1 / canvasRatio]
+    @el.style.width = w * 100 + '%'
+    @el.style.height = h * 100 + '%'
+    @el.style.left = (1 - w) / 2 * 100 + '%'
+    @el.style.top = (1 - h) / 2 * 100 + '%'
 
     # Rotate
-    @_transform()
-    @_fit() if h < @op.height or w < @op.width
+    @$el.css transform: "rotate(#{@angle}deg)"
     @_center()
     @data.angle = @angle
-
-
-  # Set CSS3 transform property
-  _transform: =>
-    x = if 0 < @angle < 270 then @canvas.offsetWidth else 0
-    y = if @angle > 90 then @canvas.offsetHeight else 0
-    @$el.css
-      'transform-origin': '0px 0px'
-      'transform': "translate(#{x}px, #{y}px) rotate(#{@angle}deg)"
 
 
   # _____ Public (The API) _____
