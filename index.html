@@ -4,25 +4,37 @@
   <meta charset='utf-8'>
   <title>jQuery Guillotine plugin</title>
   <link href='css/jquery.guillotine.css' media='all' rel='stylesheet'>
-  <link href='css/example.css' media='all' rel='stylesheet'>
+  <link href='css/example.min.css' media='all' rel='stylesheet'>
+  <link href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, target-densitydpi=device-dpi'>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--[if lt IE 9]>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js'></script>
+  <![endif]-->
 </head>
 <body>
   <div id='content'>
-    <h1>Guillotine example</h1>
-    <a id='github' href='//github.com/matiasgagliano/guillotine' target='_blank'>
-       github.com/matiasgagliano/guillotine
-    </a>
+    <h1>
+      <a id='github' href='//github.com/matiasgagliano/guillotine' target='_blank'>
+        jQuery Guillotine
+      </a>
+    </h1>
+
+    <div class='notice'>
+      Click the image and <strong>drag</strong> to move it arrond or
+      <strong>resize</strong> the browser to check its responsiveness.
+    </div>
 
     <div class='frame'>
-      <img id='sample_picture' src='//lorempixel.com/600/480/city'>
+      <img id='sample_picture' src='//lorempixel.com/640/480/city'>
     </div>
 
     <div id='controls'>
-      <button id='rotate_left'  type='button' title='Rotate left'> &lt; </button>
-      <button id='zoom_out'     type='button' title='Zoom out'> - </button>
-      <button id='fit'          type='button' title='Fit image'> [ ]  </button>
-      <button id='zoom_in'      type='button' title='Zoom in'> + </button>
-      <button id='rotate_right' type='button' title='Rotate right'> &gt; </button>
+      <a href='#' id='rotate_left'  title='Rotate left'><i class='fa fa-rotate-left'></i></a>
+      <a href='#' id='zoom_out'     title='Zoom out'><i class='fa fa-search-minus'></i></a>
+      <a href='#' id='fit'          title='Fit image'><i class='fa fa-arrows-alt'></i></a>
+      <a href='#' id='zoom_in'      title='Zoom in'><i class='fa fa-search-plus'></i></a>
+      <a href='#' id='rotate_right' title='Rotate right'><i class='fa fa-rotate-right'></i></a>
     </div>
 
     <ul id='data'>
@@ -41,33 +53,12 @@
     </ul>
   </div>
 
+  <a id='fork-me' href='//github.com/matiasgagliano/guillotine' target='_blank'>
+    <img alt='Fork me on GitHub' src="//s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png">
+  </a>
+
   <script src='//code.jquery.com/jquery-1.11.0.min.js'></script>
   <script src='js/jquery.guillotine.min.js'></script>
-  <script type='text/javascript'>
-    jQuery(function() {
-      var picture = $('#sample_picture');
-      picture.on('load', function(){
-        // Initialize plugin (with custom event)
-        picture.guillotine({eventOnChange: 'guillotinechange'});
-
-        // Display inital data
-        var data = picture.guillotine('getData');
-        for(var k in data) { $('#'+k).html(data[k]); }
-
-        // Bind button actions
-        $('#rotate_left').click(function(){ picture.guillotine('rotateLeft'); });
-        $('#rotate_right').click(function(){ picture.guillotine('rotateRight'); });
-        $('#fit').click(function(){ picture.guillotine('fit'); });
-        $('#zoom_in').click(function(){ picture.guillotine('zoomIn'); });
-        $('#zoom_out').click(function(){ picture.guillotine('zoomOut'); });
-
-        // Update data on change
-        picture.on('guillotinechange', function(event, data, action) {
-          data.scale = parseFloat(data.scale.toFixed(2));
-          for(var k in data) { $('#'+k).html(data[k]); }
-        });
-      });
-    });
-  </script>
+  <script src='js/example.min.js'></script>
 </body>
 </html>

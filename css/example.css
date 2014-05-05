@@ -1,49 +1,95 @@
 body {
-  background-color: #e7e7e7;
-  text-align: center;
+  margin: 0;
+  padding: 10px 20px;
   color: #333;
 }
 
 #content {
-  display: inline-block;
-  margin: 20px auto;
-  padding: 20px 40px 30px 40px;
+  width: 100%;
+  max-width: 600px;
   text-align: center;
   background-color: #fff;
-  -webkit-box-shadow: 0 0 20px 0 #999;
-     -moz-box-shadow: 0 0 20px 0 #999;
-          box-shadow: 0 0 20px 0 #999;
 }
 
-h1 { margin-bottom:  6px; }
-
-#github {
-  display: block;
-  font-style: italic;
-  color: #aaa;
-  margin-bottom: 20px;
+#fork-me {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
 }
 
-#github:hover { color: #333; }
+#fork-me img {
+  width: 100px;
+  border: 0;
+}
+
+@media (min-width: 600px) {
+  body {
+    background-color: #e7e7e7;
+    padding: 0;
+  }
+
+  #content {
+    width: 60%;
+    margin: 20px auto;
+    padding: 20px 40px 30px 40px;
+    -webkit-box-shadow: 0 0 20px 0 #999;
+       -moz-box-shadow: 0 0 20px 0 #999;
+            box-shadow: 0 0 20px 0 #999;
+  }
+
+  #fork-me img { width: auto; }
+}
+
+h1 { margin-bottom: 30px; }
+
+h1 a {
+  text-decoration: none;
+  color: #333;
+}
+
+h1 a:hover {
+  text-decoration: underline;
+}
+
+.notice {
+  margin-bottom: 10px;
+  padding: 5px 8px;
+  border: 2px solid #faebcc;
+  background-color: #fcf8e3;
+  color: #8a6d3b;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: justify;
+}
 
 .frame {
   border: 1px solid #ccc;
   padding: 5px;
-  margin-bottom: 20px;
 }
 
-#controls { margin-bottom: 40px; }
+.frame > img { width: 100%; }
 
-#controls button {
-  margin: 0 5px;
-  min-width: 40px;
-  color: #555;
-  font-size: 16px;
-  font-weight: bold;
-  line-height: 30px;
+#controls {
+  margin-bottom: 40px;
+  background-color: #1b1b1b;
+  text-align: center;
 }
 
-#controls button:hover { color: #333; }
+#controls a {
+  display: inline-block;
+  padding: 0 5%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 20px;
+  font-weight: 300;
+  color: #888;
+}
+
+#controls a:hover {
+  color: #fff;
+  text-decoration: none;
+}
 
 #data {
   list-style: none;

@@ -1,4 +1,5 @@
 .guillotine-window {
+  display: block;
   position: relative;
   overflow: hidden;
 }
@@ -7,12 +8,16 @@
   position: absolute;
   top: 0;
   left: 0;
+  text-align: center;
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
 }
 
 .guillotine-canvas > * {
+  position: absolute;
+  top: 0;
+  left: 0;
   max-width: none;
   max-height: none;
   width: 100%;
