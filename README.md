@@ -9,7 +9,7 @@ Demo
 Description
 -----------
 Guillotine is a jQuery plugin meant to implement image cropping.
-The developer sets a restriction of width an height and the user can
+The developer sets a restriction of width and height and the user can
 select the area she wants by rotating, zooming or dragging the image within
 a window (restriction).
 
@@ -19,7 +19,7 @@ difference with other implementations is that this one supports zoom and rotatio
 * **Responsive:** The window (or selection area) is fully responsive (fluid).
 * **Touch support:** Dragging the image also works on touch devices.
 
-*(2.9kb minified and gziped)*
+*(2.9kb minified and gzipped)*
 
 
 Setup
@@ -43,12 +43,12 @@ Setup
     picture.guillotine({width: 400, height: 300});
     ```
 
-    Here we set the dimentions we want for the cropped image (400x300), which
-    are totally independent of the size in wich the "guillotine" or "window"
+    Here we set the dimensions we want for the cropped image (400x300), which
+    are totally independent of the size in which the "guillotine" or "window"
     is actually displayed on screen.
 
     Even though it's responsive, the data returned always corresponds to the
-    predefined dimentions. In this case will always get a cropped image of
+    predefined dimensions. In this case, it will always get a cropped image of
     400 by 300 pixels.
 
 4.  Bind actions:
@@ -134,7 +134,7 @@ Guillotine is dual licensed under the MIT or GPLv3 licenses.
 
 If you feel like it, it would be enough compensation to just provide a link to
 your implementation to add it on the wiki with other sites, projects or
-resources that are succesfully using the plugin.
+resources that are successfully using the plugin.
 
 
 More features
@@ -145,5 +145,5 @@ This allows the plugin to be as flexible as possible.
 
 If you find bugs or quirks that are not oddly specific I'll be happy to hear
 about them, but for edge cases is that the [code base] (src/jquery.guillotine.coffee)
-has been keept as manteinable as possible, in those cases you are free and
+has been kept as maintainable as possible, in those cases you are free and
 encouraged to customize the plugin to suite your needs.
