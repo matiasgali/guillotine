@@ -19,12 +19,15 @@ difference with other implementations is that this one supports zoom and rotatio
 * **Responsive:** The window (or selection area) is fully responsive (fluid).
 * **Touch support:** Dragging the image also works on touch devices.
 
-*(2.9kb minified and gzipped)*
+*(2.8kb minified and gzipped)*
 
 
 Setup
 -----
-1.  Load the required files (**jquery.js** and **jquery.guillotine.js**).
+1.  Load the required files:
+    * *jquery.js*
+    * *jquery.guillotine.js*
+    * *jquery.guillotine.css*
 
 2.  Set the width of the parent element:
     ```html
@@ -86,7 +89,7 @@ Setup
           // this = current element
           // ev = event object
           // data = { scale: 1.4, angle: 270, x: 10, y: 20, w: 400, h: 300 }
-          // action = drag/rotateLeft/rotateRight/center/fit/zoomIn/zoomOut
+          // action = drag/rot')eLeft/rotateRight/center/fit/zoomIn/zoomOut
           // Save data on hidden inputs...
         });
         ```
@@ -102,6 +105,45 @@ Setup
 
 6.  Enjoy!
 
+
+API
+---
+Once instantiated, you can interact with the plugin by passing instructions as strings.
+Here is the complete **public API**:
+
+```javascript
+// Transformations
+// rotateLeft, rotateRight, center, fit, zoomIn, zoomOut
+picture.guillotine('zoomOut');
+picture.guillotine('rotateRight');
+...
+
+// Get current data
+// { scale: 1.4, angle: 270, x: 10, y: 20, w: 400, h: 300 }
+var data = picture.guillotine('getData');
+
+// Get instance (Guillotine instance)
+var guillotine = picture.guillotine('instance');
+
+// Disable/Enable the plugin
+picture.guillotine('disable');
+picture.guillotine('enable');
+
+// Remove the plugin (reset everything)
+picture.guillotine('remove');
+
+```
+
+Optionally, you can set the initial position and state of the image by passing
+a data object with the **init** option, similar the one returned by 'getData':
+```javascript
+picture.guillotine({
+  width: 400,
+  height: 300,
+  init: { x: 35, y: 15, angle: 90 }
+});
+
+```
 
 For further info and options dig through the [code base] (src/jquery.guillotine.coffee)
 that has a fair share of comments and it's intentionally coded in CoffeScript
@@ -123,7 +165,7 @@ For a more detailed list of supported browsers and devises check out the
 [support page](//github.com/matiasgagliano/guillotine/wiki/Support) on the wiki.
 
 It would be great if you could test it on other browsers and devices and share
-your experience so it ends up on the wiki.
+your experience on the wiki (or open an issue if it doesn't work properly).
 
 
 License
@@ -133,8 +175,9 @@ Guillotine is dual licensed under the MIT or GPLv3 licenses.
 * <http://opensource.org/licenses/GPL-3.0>
 
 If you feel like it, it would be enough compensation to just provide a link to
-your implementation to add it on the wiki with other sites, projects or
-resources that are successfully using the plugin.
+your implementation or a simple mention so it can be added on the wiki with
+other sites, projects or resources that successfully use the plugin
+(open up an issue to let me know).
 
 
 More features
