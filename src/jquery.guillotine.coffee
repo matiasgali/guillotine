@@ -1,5 +1,5 @@
 ###
- * jQuery Guillotine Plugin v1.1.0
+ * jQuery Guillotine Plugin v1.2.0
  * http://matiasgagliano.github.com/guillotine/
  *
  * Copyright 2014, Matías Gagliano.
@@ -20,14 +20,17 @@ pluginName = 'guillotine'
 scope = 'guillotine'
 
 events =
-  start: "MSPointerDown.#{scope} touchstart.#{scope} mousedown.#{scope}"
-  move:  "MSPointerMove.#{scope} touchmove.#{scope} mousemove.#{scope}"
-  stop:  "MSPointerUp.#{scope} touchend.#{scope} mouseup.#{scope}"
+  start: "touchstart.#{scope} mousedown.#{scope} MSPointerDown.#{scope}"
+  move:  "touchmove.#{scope}  mousemove.#{scope} MSPointerMove.#{scope}"
+  stop:  "touchend.#{scope}   mouseup.#{scope}   MSPointerUp.#{scope}"
 
 defaults =
   width: 400
   height: 300
   zoomStep: 0.1
+  init: null
+    # Initial state and position
+    # E.g. {x: 0, y: 0, angle: 0, scale: 1}
   eventOnChange: null
     # Event to be triggered after each change (drag, rotate, etc.).
     # E.g. 'transform.guillotine' or 'guillotinechange'
@@ -108,10 +111,7 @@ canTransform = ->
       hasTransform = true; break
 
   document.body.removeChild(helper)
-  if hasTransform
-    canTransform = -> true
-  else
-    canTransform = -> false
+  canTransform = if hasTransform then (-> true) else (-> false)
   canTransform()
 
 
@@ -133,7 +133,7 @@ hardwareAccelerate = (el) ->
 class Guillotine
   constructor: (element, options) ->
     # Build options
-    # The data attribute override options, and options override defaults.
+    # The data attribute overrides options, and options override defaults.
     # ( data-guillotine='{"width": 640, "height": 480}' )
     @op = $.extend true, {}, defaults, options, $(element).data(pluginName)
 
@@ -148,7 +148,8 @@ class Guillotine
 
     # Markup
     @_wrap(element)
-    @_fit() and @_center() if @width < 1 or @height < 1
+    @_init() if @op.init?
+    @_fit() and @_center() if @width < 1 or @height < 1  # 1 means 100%
     hardwareAccelerate(@$el)
 
     # Events
@@ -159,16 +160,15 @@ class Guillotine
   #
 
   # Wrap element with the necesary markup
-  _wrap: (element) =>
+  _wrap: (element) ->
     el = $(element)
 
     # Get image's real dimensions
     if el.prop('tagName') is 'IMG'
       # Helper image (full size image)
-      # Assumes the target image already existed and that it's cached.
-      # It's up to the user to instantiate the plugin after the target is loaded.
+      # Note: Assumes that the target image is already loaded (or cached).
       img = document.createElement('img')
-      img.setAttribute('src', el.attr('src'))
+      img.src = el.attr('src')
       # Notice: width and height properties hold the dimensions even
       # though the image hasn't been rendered or appended to the DOM.
       [width, height] = [img.width, img.height]
@@ -199,12 +199,22 @@ class Guillotine
 
 
   # Back to original state
-  _unwrap: =>
+  _unwrap: ->
     @$el.removeAttr 'style'
     @$el.insertBefore @gllt
     @$gllt.remove()
 
 
+  # Initial state and position
+  _init: ->
+    o = @op.init
+    @_rotate angle  if ( angle = parseInt(o.angle) )
+    @_zoom   scale  if ( scale = parseFloat(o.scale) )
+    @_offset parseInt(o.x)/@op.width, parseInt(o.y)/@op.height  # NaN/num = NaN
+
+
+  # On starting event (events.start)
+  # Note: Use "=>" instead of "->" with methods meant to be binded/unbinded!
   _start: (e) =>
     return unless @enabled and validEvent(e)
     e.preventDefault()
@@ -213,7 +223,7 @@ class Guillotine
     @_bind()
 
 
-  _bind: =>
+  _bind: ->
     @$document.on events.move, @_drag
     @$document.on events.stop, @_unbind
 
@@ -225,7 +235,7 @@ class Guillotine
 
 
   # Trigger event and/or call callback function
-  _trigger: (action) =>
+  _trigger: (action) ->
     @$el.trigger @op.eventOnChange, [@data, action] if @op.eventOnChange?
     @op.onChange.call(@el, @data, action) if typeof @op.onChange is 'function'
 
@@ -234,71 +244,67 @@ class Guillotine
     e.preventDefault()
     e.stopImmediatePropagation()
 
-    p = getCursorPosition(e)           # Cursor position after moving
-    dx = p.x - @p.x                    # Difference (cursor movement) on X axes
-    dy = p.y - @p.y                    # Difference (cursor movement) on Y axes
-    @p = p                             # Update cursor position
+    p = getCursorPosition(e)            # Cursor position after moving
+    dx = p.x - @p.x                     # Difference (cursor movement) on X axes
+    dy = p.y - @p.y                     # Difference (cursor movement) on Y axes
+    @p = p                              # Update cursor position
 
-    # When dragging it isn't crucial to avoid every malformed 'top' or 'left'
-    # styles caused by scientific notation on @left or @top.
-    # Not using 'toFixed' here to make dragging as fast as possible.
+    # dx > 0 if moving right
+    # dx/clientWidth is the percentage of the window's width it moved over x
+    left = if  dx == 0  then  null  else  @left - dx/@gllt.clientWidth
 
-    if dx != 0
-      dx = dx / @gllt.clientWidth      # dx relative to the width of the window
-      if dx > 0                        # If moving right
-        dx = -@left if dx > -@left
-      else                             # If moving left (dx < 0)
-        right = -(@width+@left-1)      # Right margin (%)
-        dx = right if dx < right
-      @left += dx
-      @canvas.style.left = @left * 100 + '%'
-      @data.x = Math.round -@left * @op.width
+    # dy > 0 if moving down
+    # dy/clientHeight is the percentage of the window's height it moved over y
+    top  = if  dy == 0  then  null  else  @top - dy/@gllt.clientHeight
 
-    if dy != 0
-      dy = dy / @gllt.clientHeight     # dy relative to the height of the window
-      if dy > 0                        # If moving down
-        dy = -@top if dy > -@top
-      else                             # If moving up (dy < 0)
-        bottom = -(@height+@top-1)     # Bottom margin (%)
-        dy = bottom if dy < bottom
-      @top += dy
-      @canvas.style.top = @top * 100 + '%'
-      @data.y = Math.round -@top * @op.height
+    # Move
+    @_offset left, top
 
 
-  _zoom: (factor) =>
+  _offset: (left, top) ->                   # left and top are relative numbers!
+    # Offset left
+    if left || left == 0      # !!0 is false
+      left = 0 if left < 0
+      left = @width-1 if left > @width-1
+      # (toFixed avoids scientific notation)
+      @canvas.style.left = (-left * 100).toFixed(2) + '%'
+      @left = left
+      @data.x = Math.round left * @op.width
+
+    # Offset top
+    if top || top == 0
+      top = 0 if top < 0
+      top = @height-1 if top > @height-1
+      # (toFixed avoids scientific notation)
+      @canvas.style.top = (-top * 100).toFixed(2) + '%'
+      @top = top
+      @data.y = Math.round top * @op.height
+
+
+  _zoom: (factor) ->
     return if factor <= 0 or factor == 1
     [w, h] = [@width, @height]
 
     # Zoom
     if w * factor > 1 and h * factor > 1
-      @width *= factor
+      @width  *= factor
       @height *= factor
-      # (use toFixed to prevent scientific notation on the strings)
-      @canvas.style.width = (@width * 100).toFixed(2) + '%'
+      # (toFixed avoids scientific notation)
+      @canvas.style.width  = (@width * 100).toFixed(2) + '%'
       @canvas.style.height = (@height * 100).toFixed(2) + '%'
       @data.scale *= factor
     else
       @_fit()
       factor = @width / w
 
-    # Keep same center when possible
-    @left -= w*(factor-1)/2                             # Same horizontal center
-    @left  = 1 - @width       if @left + @width < 1     # Keep on right edge
-    @left  = 0                if @left > 0              # Keep on left edge
-    @top  -= h*(factor-1)/2                             # Same vertical center
-    @top   = 1 - @height      if @top + @height < 1     # Keep on bottom edge
-    @top   = 0                if @top > 0               # Keep on top edge
-
-    # (use toFixed to prevent scientific notation on the strings)
-    @canvas.style.left = (@left * 100).toFixed(2) + '%'
-    @canvas.style.top = (@top * 100).toFixed(2) + '%'
-    @data.x = Math.round -@left * @op.width
-    @data.y = Math.round -@top * @op.height
+    # Keep as centered as possible
+    left = @left + w*(factor-1)/2
+    top  = @top + h*(factor-1)/2
+    @_offset left, top
 
 
-  # Adjast the element (canvas) to the edges of the window keeping aspect ratio.
-  _fit: =>
+  # Adjust the element (canvas) to the edges of the window keeping aspect ratio.
+  _fit: ->
     prevWidth = @width
     relativeRatio = @height / @width
     if relativeRatio > 1                      # => canvasH/canvasW > glltH/glltW
@@ -307,24 +313,18 @@ class Guillotine
     else
       @width = 1 / relativeRatio
       @height = 1
-    # (use toFixed to prevent scientific notation on the strings)
-    @canvas.style.width = (@width * 100).toFixed(2) + '%'
+    # (toFixed avoids scientific notation)
+    @canvas.style.width  = (@width * 100).toFixed(2) + '%'
     @canvas.style.height = (@height * 100).toFixed(2) + '%'
     @data.scale *= @width / prevWidth
 
 
-  _center: =>
-    @left = (1 - @width) / 2
-    @top  = (1 - @height) / 2
-    # (use toFixed to prevent scientific notation on the strings)
-    @canvas.style.left = (@left * 100).toFixed(2) + '%'
-    @canvas.style.top = (@top * 100).toFixed(2) + '%'
-    @data.x = Math.round -@left * @op.width
-    @data.y = Math.round -@top * @op.height
+  _center: -> @_offset (@width-1)/2, (@height-1)/2
 
 
-  _rotate: (angle) =>
-    return unless canTransform() and angle % 90 is 0
+  _rotate: (angle) ->
+    return unless canTransform()
+    return unless angle isnt 0 and angle % 90 is 0
 
     # Smallest positive equivalent angle (total rotation)
     @angle = (@angle + angle) % 360
@@ -348,7 +348,7 @@ class Guillotine
       else
         @_fit()
 
-    # Adjast element's (image) dimensions inside the canvas
+    # Adjust element's (image) dimensions inside the canvas
     [w, h] = [1, 1]
     if (@angle % 180 isnt 0)
       canvasRatio = @height / @width * glltRatio
@@ -368,17 +368,21 @@ class Guillotine
   #
 
   # Actions
-  rotateLeft:  => @enabled and (@_rotate(-90);          @_trigger('rotateLeft'))
-  rotateRight: => @enabled and (@_rotate(90);           @_trigger('rotateRight'))
-  center:      => @enabled and (@_center();             @_trigger('center'))
-  fit:         => @enabled and (@_fit(); @_center();    @_trigger('fit'))
-  zoomIn:      => @enabled and (@_zoom(@zoomInFactor);  @_trigger('zoomIn'))
-  zoomOut:     => @enabled and (@_zoom(@zoomOutFactor); @_trigger('zoomOut'))
+  rotateLeft:  -> @enabled and (@_rotate(-90);          @_trigger('rotateLeft'))
+  rotateRight: -> @enabled and (@_rotate(90);           @_trigger('rotateRight'))
+  center:      -> @enabled and (@_center();             @_trigger('center'))
+  fit:         -> @enabled and (@_fit(); @_center();    @_trigger('fit'))
+  zoomIn:      -> @enabled and (@_zoom(@zoomInFactor);  @_trigger('zoomIn'))
+  zoomOut:     -> @enabled and (@_zoom(@zoomOutFactor); @_trigger('zoomOut'))
 
   # Utilities
-  getData: => @data
-  enable:  => @enabled = true
-  disable: => @enabled = false
+  getData: -> @data
+  enable:  -> @enabled = true
+  disable: -> @enabled = false
+  remove: ->
+    @_unbind(); @_unwrap(); @disable()
+    @$el.off events.start, @_start
+    @$el.removeData(pluginName + 'Instance')
 
 
 
@@ -387,8 +391,10 @@ class Guillotine
 #           The Plugin
 # ______________________________
 #
-$.fn[pluginName] = (options) ->
+whitelist = ['rotateLeft', 'rotateRight', 'center', 'fit', 'zoomIn', 'zoomOut', \
+             'instance', 'getData', 'enable', 'disable', 'remove']
 
+$.fn[pluginName] = (options) ->
   # Plug it! Lightweight plugin wrapper around the constructor.
   if typeof options isnt 'string'
     @each ->
@@ -398,34 +404,11 @@ $.fn[pluginName] = (options) ->
         guillotine = new Guillotine(@, options)
         $.data(@, pluginName + 'Instance', guillotine)
 
-
   # Plugin's API
-  else
-    switch method = options
-      # Return guillotine's instance for the first element
-      when 'instance'
-        $.data(@[0], pluginName + 'Instance')
-
-      # Remove plugin for each element
-      when 'remove'
-        @each ->
-          guillotine = $.data(@, pluginName + 'Instance')
-          return unless guillotine?
-          guillotine._unbind()
-          guillotine._unwrap()
-          guillotine.disable()
-          guillotine.$el.off events.start, guillotine._start
-          guillotine.$el.removeData(pluginName + 'Instance')
-
-      # Return data (coords, angle, scale) for the first element
-      when 'getData'
-        $.data(@[0], pluginName + 'Instance')?['getData'].call()
-
-      # Use Guillotine's API through the plugin
-      # E.g. element.guillotine('rotateLeft')
-      when 'rotateLeft','rotateRight','center','fit', \
-           'zoomIn','zoomOut', 'enable', 'disable'
-        @each ->
-          guillotine = $.data(@, pluginName + 'Instance')
-          return unless guillotine?
-          guillotine[method].call()
+  # E.g. element.guillotine('rotateLeft')
+  else if options in whitelist
+    return $.data(@[0], pluginName+'Instance') if options is 'instance'
+    return $.data(@[0], pluginName+'Instance')[options]() if options is 'getData'
+    @each ->
+      guillotine = $.data(@, pluginName + 'Instance')
+      guillotine[options]() if guillotine
