@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset='utf-8'>
-  <title>Guillotine example</title>
+  <title>Guillotine demo</title>
   <link href='../css/jquery.guillotine.css' media='all' rel='stylesheet'>
-  <link href='example.css' media='all' rel='stylesheet'>
+  <link href='demo.css' media='all' rel='stylesheet'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0, target-densitydpi=device-dpi'>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <!--[if lt IE 9]>
@@ -13,7 +13,7 @@
 </head>
 <body>
   <div id='content'>
-    <h1>Guillotine example</h1>
+    <h1>Guillotine demo</h1>
 
     <div class='frame'>
       <img id='sample_picture' src='http://lorempixel.com/640/480/city'>
@@ -54,7 +54,7 @@
 
         // Display inital data
         var data = picture.guillotine('getData');
-        for(var k in data) { $('#'+k).html(data[k]); }
+        for(var key in data) { $('#'+key).html(data[key]); }
 
         // Bind button actions
         $('#rotate_left').click(function(){ picture.guillotine('rotateLeft'); });
