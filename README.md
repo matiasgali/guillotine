@@ -54,6 +54,14 @@ Setup
     predefined dimensions. In this case, it will always get a cropped image of
     400 by 300 pixels.
 
+    **Notice:** Make sure that the target element is ready before instantiating!
+
+    If it's an image, make sure that it is already loaded or cached before
+    calling Guillotine, so it can get its dimensions and display it properly.
+    You can use the *onload* event, the *complete* property or check that the
+    image has a width greater than zero to determine if it's loaded.
+
+
 4.  Bind actions:
     ```javascript
     $('#rotate-left-button').click(function(){
@@ -134,8 +142,8 @@ picture.guillotine('remove');
 
 ```
 
-Optionally, you can set the initial position and state of the image by passing
-a data object with the **init** option, similar the one returned by 'getData':
+Optionally, you can set the initial position and state of the image by passing a
+data object with the **init** option, similar to the one returned by 'getData':
 ```javascript
 picture.guillotine({
   width: 400,
