@@ -8,13 +8,9 @@ Demo
 
 Description
 -----------
-Guillotine is a jQuery plugin meant to implement image cropping.
-The developer sets a restriction of width and height and the user can
-select the area she wants by rotating, zooming or dragging the image within
-a window (restriction).
-
-A common example is selecting the display area of an avatar image, the main
-difference with other implementations is that this one supports zoom and rotation.
+Guillotine is a jQuery plugin that allows to **drag**, **zoom** or **rotate**
+an image to select a cropping area. Like selecting the display area of a
+profile picture or avatar.
 
 * **Responsive:** The window (or selection area) is fully responsive (fluid).
 * **Touch support:** Dragging the image also works on touch devices.

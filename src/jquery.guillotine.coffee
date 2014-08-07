@@ -1,5 +1,5 @@
 ###
- * jQuery Guillotine Plugin v1.2.0
+ * jQuery Guillotine Plugin v1.2.1
  * http://matiasgagliano.github.com/guillotine/
  *
  * Copyright 2014, Matías Gagliano.
@@ -297,9 +297,18 @@ class Guillotine
       @_fit()
       factor = @width / w
 
-    # Keep as centered as possible
-    left = @left + w*(factor-1)/2
-    top  = @top + h*(factor-1)/2
+    # Keep window center.
+    #
+    # The offsets are the distances between the image point in the center of
+    # the window and each edge of the image, less half the size of the window.
+    # Percentage offsets are relative to the container (the window), so half
+    # the window is 50% (0.5) and when zooming the distance between any two
+    # points in the image grows by 'factor', so the new offsets are:
+    #
+    # offset = (prev-center-to-edge) * factor - half-window
+    #
+    left = (@left + 0.5) * factor - 0.5
+    top  = (@top + 0.5) * factor - 0.5
     @_offset left, top
 
 
