@@ -1,5 +1,5 @@
 ###
- * jQuery Guillotine Plugin v1.2.1
+ * jQuery Guillotine Plugin v1.2.2
  * http://matiasgagliano.github.com/guillotine/
  *
  * Copyright 2014, Matías Gagliano.

@@ -1,0 +1,47 @@
+{
+  "name": "jquery-guillotine",
+  "description": "Allow users to crop images within an area (fully responsive). Supports dragging (touch support), zoom and rotation.",
+  "version": "1.2.2",
+  "homepage": "https://github.com/matiasgagliano/guillotine",
+  "authors": [
+    "Matías Gagliano"
+  ],
+  "license": [
+    "MIT",
+    "GPL-3.0"
+  ],
+  "main": [
+    "js/jquery.guillotine.js",
+    "css/jquery.guillotine.css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/matiasgagliano/guillotine.git"
+  },
+  "keywords": [
+    "jquery",
+    "guillotine",
+    "image",
+    "crop",
+    "rotate",
+    "zoom",
+    "drag",
+    "fit",
+    "center",
+    "touch",
+    "responsive",
+    "fluid"
+  ],
+  "ignore": [
+    "/.*",
+    "/*.json",
+    "demo",
+    "js/jquery.guillotine.min.js",
+    "src",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jquery": ">= 1.7.0"
+  }
+}

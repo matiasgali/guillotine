@@ -1,23 +1,40 @@
 {
   "name": "guillotine",
-  "version": "1.2.1",
   "title": "Guillotine",
-  "description": "Crop images within an area (fully responsive), allowing to drag (touch support), zoom and rotate.",
-  "keywords": [ "touch", "responsive", "fluid", "image", "crop", "drag", "zoom", "fit", "center", "rotate" ],
-  "author": { "name": "Matías Gagliano" },
+  "description": "Allow users to crop images within an area (fully responsive). Supports dragging (touch support), zoom and rotation.",
+  "version": "1.2.2",
+  "homepage": "https://github.com/matiasgagliano/guillotine",
+  "author": {
+    "name": "Matías Gagliano"
+  },
   "licenses": [
     {
       "type": "MIT",
       "url": "http://opensource.org/licenses/MIT"
     },
     {
-      "type": "GPLv3",
+      "type": "GPL-3.0",
       "url": "http://opensource.org/licenses/GPL-3.0"
     }
   ],
-  "homepage": "https://github.com/matiasgagliano/guillotine",
   "docs": "https://github.com/matiasgagliano/guillotine",
   "bugs": "https://github.com/matiasgagliano/guillotine/issues",
   "demo": "https://matiasgagliano.github.io/guillotine",
-  "dependencies": { "jquery": ">=1.7" }
+  "keywords": [
+    "jquery",
+    "guillotine",
+    "image",
+    "crop",
+    "rotate",
+    "zoom",
+    "drag",
+    "fit",
+    "center",
+    "touch",
+    "responsive",
+    "fluid"
+  ],
+  "dependencies": {
+    "jquery": ">= 1.7.0"
+  }
 }
