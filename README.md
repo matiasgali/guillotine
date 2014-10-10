@@ -153,6 +153,21 @@ For further info and options dig through the [code base] (src/jquery.guillotine.
 that has a fair share of comments and it's intentionally coded in CoffeScript
 to ease out reading and customizing it.
 
+For NodeJS & NodeJS gm npm module:
+Below is the way to crop the image 
+  
+   // body refers to guillotine outout data object.
+   var newW = imageWidth * body.scale, newH = imageHeight * body.scale;
+   gm(req.files.file.path)
+      .rotate('white', body.angle) 
+      .resize(newW, newH, '!')
+      .crop(body.w, body.h, body.x, body.y)
+      .write(outputFileName, function (err) { // outputFileName is the path where you want to store output thumbnail
+         if(!err) {
+            console.log('We are done!");
+         }
+      });
+
 
 Support
 -------
