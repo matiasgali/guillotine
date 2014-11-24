@@ -178,11 +178,6 @@ Guillotine is dual licensed under the MIT or GPLv3 licenses.
 * <http://opensource.org/licenses/MIT>
 * <http://opensource.org/licenses/GPL-3.0>
 
-If you feel like it, it would be enough compensation to just provide a link to
-your implementation or a simple mention so it can be added on the wiki with
-other sites, projects or resources that successfully use the plugin
-(open up an issue to let me know).
-
 
 More features
 -------------
@@ -190,7 +185,11 @@ The plugin aims to have a simple and general API to allow interaction, specific
 features and the user interface are left for the developer to implement.
 This allows the plugin to be as flexible as possible.
 
-If you find bugs or quirks that are not oddly specific I'll be happy to hear
-about them, but for edge cases is that the [code base] (src/jquery.guillotine.coffee)
+For edge cases is that the [code base](src/jquery.guillotine.coffee)
 has been kept as maintainable as possible, in those cases you are free and
 encouraged to customize the plugin to suite your needs.
+
+
+Contributing
+------------
+See [CONTRIBUTING.md](CONTRIBUTING.md)
