@@ -2,7 +2,7 @@
   "name": "guillotine",
   "title": "Guillotine",
   "description": "Allow users to crop images within an area (fully responsive). Supports dragging (touch support), zoom and rotation.",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "homepage": "https://github.com/matiasgagliano/guillotine",
   "author": {
     "name": "Matías Gagliano"
