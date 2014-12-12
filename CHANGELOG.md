@@ -6,7 +6,8 @@ Changelog
 
 **Bugfixes:**
 
-- Fix dragging on IE10.
+- Fix dragging on IE10 (#12).
+- Fix drag not released with jQuery 1.8 (#16).
 
 
 1.2.2

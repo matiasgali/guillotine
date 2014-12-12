@@ -25,8 +25,8 @@
 
   events = {
     start: "touchstart." + scope + " mousedown." + scope + " pointerdown." + scope,
-    move: "touchmove." + scope + "  mousemove." + scope + " pointermove." + scope,
-    stop: "touchend." + scope + "   mouseup." + scope + "   pointerup." + scope
+    move: "touchmove." + scope + " mousemove." + scope + " pointermove." + scope,
+    stop: "touchend." + scope + " mouseup." + scope + " pointerup." + scope
   };
 
   defaults = {

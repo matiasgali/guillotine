@@ -21,8 +21,8 @@ scope = 'guillotine'
 
 events =
   start: "touchstart.#{scope} mousedown.#{scope} pointerdown.#{scope}"
-  move:  "touchmove.#{scope}  mousemove.#{scope} pointermove.#{scope}"
-  stop:  "touchend.#{scope}   mouseup.#{scope}   pointerup.#{scope}"
+  move:  "touchmove.#{scope} mousemove.#{scope} pointermove.#{scope}"
+  stop:  "touchend.#{scope} mouseup.#{scope} pointerup.#{scope}"
 
 defaults =
   width: 400
@@ -198,7 +198,7 @@ class Guillotine
 
 
   # On starting event (events.start)
-  # Note: Use "=>" instead of "->" with methods meant to be binded/unbinded!
+  # Bind event handlers to self using '=>', prevents jQuery from setting 'this'.
   _start: (e) =>
     return unless @enabled and validEvent(e)
     e.preventDefault()
@@ -212,6 +212,7 @@ class Guillotine
     @$document.on events.stop, @_unbind
 
 
+  # Bind event handlers to self using '=>', prevents jQuery from setting 'this'.
   _unbind: (e) =>
     @$document.off events.move, @_drag
     @$document.off events.stop, @_unbind  # Unbind this very function (handler)
