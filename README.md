@@ -138,13 +138,14 @@ picture.guillotine('remove');
 
 ```
 
-Optionally, you can set the initial position and state of the image by passing a
-data object with the **init** option, similar to the one returned by 'getData':
+Optionally, you can set the initial position and state of the image with the
+**init** option. It takes a data object similar to the one returned by *getData*.
+You may set *angle*, *scale*, *x* and *y*, any other property will be ignored:
 ```javascript
 picture.guillotine({
   width: 400,
   height: 300,
-  init: { x: 35, y: 15, angle: 90 }
+  init: { angle: 90, x: 80 }
 });
 
 ```

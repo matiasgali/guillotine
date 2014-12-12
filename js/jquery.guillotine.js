@@ -180,13 +180,13 @@
     Guillotine.prototype._init = function() {
       var angle, o, scale;
       o = this.op.init;
-      if ((angle = parseInt(o.angle))) {
-        this._rotate(angle);
-      }
       if ((scale = parseFloat(o.scale))) {
         this._zoom(scale);
       }
-      return this._offset(parseInt(o.x) / this.op.width, parseInt(o.y) / this.op.height);
+      if ((angle = parseInt(o.angle))) {
+        this._rotate(angle);
+      }
+      return this._offset(parseInt(o.x) / this.op.width || 0, parseInt(o.y) / this.op.height || 0);
     };
 
     Guillotine.prototype._start = function(e) {

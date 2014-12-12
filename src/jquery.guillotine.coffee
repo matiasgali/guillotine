@@ -192,9 +192,9 @@ class Guillotine
   # Initial state and position
   _init: ->
     o = @op.init
-    @_rotate angle  if ( angle = parseInt(o.angle) )
     @_zoom   scale  if ( scale = parseFloat(o.scale) )
-    @_offset parseInt(o.x)/@op.width, parseInt(o.y)/@op.height  # NaN/num = NaN
+    @_rotate angle  if ( angle = parseInt(o.angle) )
+    @_offset parseInt(o.x)/@op.width || 0, parseInt(o.y)/@op.height || 0
 
 
   # On starting event (events.start)
