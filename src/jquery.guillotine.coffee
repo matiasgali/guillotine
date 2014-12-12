@@ -20,9 +20,9 @@ pluginName = 'guillotine'
 scope = 'guillotine'
 
 events =
-  start: "touchstart.#{scope} mousedown.#{scope} MSPointerDown.#{scope}"
-  move:  "touchmove.#{scope}  mousemove.#{scope} MSPointerMove.#{scope}"
-  stop:  "touchend.#{scope}   mouseup.#{scope}   MSPointerUp.#{scope}"
+  start: "touchstart.#{scope} mousedown.#{scope} pointerdown.#{scope}"
+  move:  "touchmove.#{scope}  mousemove.#{scope} pointermove.#{scope}"
+  stop:  "touchend.#{scope}   mouseup.#{scope}   pointerup.#{scope}"
 
 defaults =
   width: 400
@@ -51,42 +51,26 @@ defaults =
 # ______________________________
 #
 
-# isTouch()
+# isTouch(event)
 #   Is the event a touch event?
-isTouch = (e) -> e.type.search('touch') > -1
-
-
-# isPointerEventCompatible()
-#   Is the device pointer event compatible?
-#   (typically means a touch Win8 device)
-isPointerEventCompatible = -> ('MSPointerEvent' in window)
+touchRegExp = /touch/i
+isTouch = (e) -> touchRegExp.test(e.type)
 
 
 # validEvent(event)
 #   Whether the event is a valid action to start dragging or not.
-#   Override the function so it checks display type only the first time.
 validEvent = (e) ->
-  if isPointerEventCompatible() or !isTouch(e)
-    # Left click only
-    validEvent = (e) -> e.which? and e.which is 1
+  if isTouch(e)
+    e.originalEvent.changedTouches.length is 1   # Single touch only
   else
-    # Single touch only
-    validEvent = -> e.originalEvent?.touches?.length == 1
-  validEvent(e)
+    e.which is 1                                 # Left click only
 
 
-# getCursorPosition(event)
-#   Get the position of the cursor when the event is triggered.
-#   Override the function so it checks display type only the first time.
-getCursorPosition = (e) ->
-  if isPointerEventCompatible() or !isTouch(e)
-    getCursorPosition = (e) ->
-      { x: e.pageX, y: e.pageY }
-  else
-    getCursorPosition = (e) ->
-      e = e.originalEvent.touches[0]
-      { x: e.pageX, y: e.pageY }
-  getCursorPosition(e)
+# getPointerPosition(event)
+#   Get the position of the pointer (cursor, etc.) when the event is triggered.
+getPointerPosition = (e) ->
+  e = e.originalEvent.touches[0] if isTouch(e)
+  { x: e.pageX, y: e.pageY }
 
 
 # canTransform()
@@ -219,7 +203,7 @@ class Guillotine
     return unless @enabled and validEvent(e)
     e.preventDefault()
     e.stopImmediatePropagation()
-    @p = getCursorPosition(e)         # Cursor position before moving (dragging)
+    @p = getPointerPosition(e)        # Cursor position before moving (dragging)
     @_bind()
 
 
@@ -244,7 +228,7 @@ class Guillotine
     e.preventDefault()
     e.stopImmediatePropagation()
 
-    p = getCursorPosition(e)            # Cursor position after moving
+    p = getPointerPosition(e)           # Cursor position after moving
     dx = p.x - @p.x                     # Difference (cursor movement) on X axes
     dy = p.y - @p.y                     # Difference (cursor movement) on Y axes
     @p = p                              # Update cursor position

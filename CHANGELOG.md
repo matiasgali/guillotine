@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.3.0
+-----
+
+**Bugfixes:**
+
+- Fix dragging on IE10.
+
+
 1.2.2
 -----
 
