@@ -6,7 +6,7 @@ Changelog
 
 **Bugfixes:**
 
-- Fix dragging on IE10 (#12).
+- Fix dragging on IE 10 and 11 (#12).
 - Fix drag not released with jQuery 1.8 (#16).
 - Fix scale issue with the init option (#17).
 

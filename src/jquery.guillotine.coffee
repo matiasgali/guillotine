@@ -20,9 +20,9 @@ pluginName = 'guillotine'
 scope = 'guillotine'
 
 events =
-  start: "touchstart.#{scope} mousedown.#{scope} pointerdown.#{scope}"
-  move:  "touchmove.#{scope} mousemove.#{scope} pointermove.#{scope}"
-  stop:  "touchend.#{scope} mouseup.#{scope} pointerup.#{scope}"
+  start: "touchstart.#{scope} mousedown.#{scope}"
+  move:  "touchmove.#{scope} mousemove.#{scope}"
+  stop:  "touchend.#{scope} mouseup.#{scope}"
 
 defaults =
   width: 400
