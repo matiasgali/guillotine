@@ -4,6 +4,11 @@ Changelog
 1.3.0
 -----
 
+**Features:**
+
+- Make the cursor interactive when dragging.
+
+
 **Bugfixes:**
 
 - Fix dragging on IE 10 and 11 (#12).

@@ -65,13 +65,13 @@
   canTransform = function() {
     var hasTransform, helper, prefix, prefixes, prop, test, tests, value, _i, _len;
     hasTransform = false;
-    prefixes = 'webkit,Moz,O,ms,Khtml'.split(',');
+    prefixes = ['webkit', 'Moz', 'O', 'ms', 'Khtml'];
     tests = {
       transform: 'transform'
     };
     for (_i = 0, _len = prefixes.length; _i < _len; _i++) {
       prefix = prefixes[_i];
-      tests[prefix + 'Transform'] = "-" + (prefix.toLowerCase()) + "-transform";
+      tests[prefix + 'Transform'] = '-' + prefix.toLowerCase() + '-transform';
     }
     helper = document.createElement('img');
     document.body.insertBefore(helper, null);
@@ -114,6 +114,7 @@
       this.enabled = true;
       this.zoomInFactor = 1 + this.op.zoomStep;
       this.zoomOutFactor = 1 / this.zoomInFactor;
+      this.glltRatio = this.op.height / this.op.width;
       this.width = this.height = this.left = this.top = this.angle = 0;
       this.data = {
         scale: 1,
@@ -175,7 +176,8 @@
       this.canvas = canvas[0];
       this.$gllt = guillotine;
       this.gllt = guillotine[0];
-      return this.$document = $(element.ownerDocument);
+      this.$document = $(element.ownerDocument);
+      return this.$body = $('body', this.$document);
     };
 
     Guillotine.prototype._unwrap = function() {
@@ -207,11 +209,13 @@
     };
 
     Guillotine.prototype._bind = function() {
+      this.$body.addClass('guillotine-dragging');
       this.$document.on(events.move, this._drag);
       return this.$document.on(events.stop, this._unbind);
     };
 
     Guillotine.prototype._unbind = function(e) {
+      this.$body.removeClass('guillotine-dragging');
       this.$document.off(events.move, this._drag);
       this.$document.off(events.stop, this._unbind);
       if (e != null) {
@@ -267,11 +271,12 @@
     };
 
     Guillotine.prototype._zoom = function(factor) {
-      var h, left, top, w, _ref;
+      var h, left, top, w;
       if (factor <= 0 || factor === 1) {
         return;
       }
-      _ref = [this.width, this.height], w = _ref[0], h = _ref[1];
+      w = this.width;
+      h = this.height;
       if (w * factor > 1 && h * factor > 1) {
         this.width *= factor;
         this.height *= factor;

@@ -1,7 +1,20 @@
+body.guillotine-dragging, body.guillotine-dragging * {
+  cursor: move !important;
+  cursor: -webkit-grabbing !important;
+  cursor:    -moz-grabbing !important;
+  cursor:         grabbing !important;
+  cursor: grabbing, move;  /* IE hack */
+}
+
 .guillotine-window {
   display: block;
   position: relative;
   overflow: hidden;
+  cursor: move;
+  cursor: -webkit-grab;
+  cursor:    -moz-grab;
+  cursor:         grab;
+  cursor: grab, move;  /* IE hack */
 }
 
 .guillotine-canvas {

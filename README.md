@@ -15,7 +15,7 @@ profile picture or avatar.
 * **Responsive:** The window (or selection area) is fully responsive (fluid).
 * **Touch support:** Dragging the image also works on touch devices.
 
-*(2.8kb minified and gzipped)*
+*(2.7kb minified and gzipped)*
 
 
 Setup

@@ -78,10 +78,10 @@ getPointerPosition = (e) ->
 #   Override the function so it checks support just once.
 canTransform = ->
   hasTransform = false
-  prefixes = 'webkit,Moz,O,ms,Khtml'.split(',')
+  prefixes = ['webkit', 'Moz', 'O', 'ms', 'Khtml']
   tests = { transform: 'transform' }
   for prefix in prefixes
-    tests[prefix+'Transform'] = "-#{prefix.toLowerCase()}-transform"
+    tests[prefix + 'Transform'] = '-' + prefix.toLowerCase() + '-transform'
 
   # Create a helper element and add it to the body to get the computed style.
   helper = document.createElement('img')
@@ -92,7 +92,8 @@ canTransform = ->
     helper.style[test] = 'rotate(90deg)'
     value = window.getComputedStyle(helper).getPropertyValue(prop)
     if value? and value.length and value isnt 'none'
-      hasTransform = true; break
+      hasTransform = true
+      break
 
   document.body.removeChild(helper)
   canTransform = if hasTransform then (-> true) else (-> false)
@@ -125,6 +126,7 @@ class Guillotine
     @enabled = true
     @zoomInFactor = 1 + @op.zoomStep
     @zoomOutFactor = 1 / @zoomInFactor
+    @glltRatio = @op.height / @op.width
     @width = @height = @left = @top = @angle = 0
 
     # Transformation instructions
@@ -181,6 +183,7 @@ class Guillotine
     @$canvas = canvas; @canvas = canvas[0]
     @$gllt = guillotine; @gllt = guillotine[0]
     @$document = $(element.ownerDocument)
+    @$body = $('body', @$document)
 
 
   # Back to original state
@@ -209,14 +212,16 @@ class Guillotine
 
 
   _bind: ->
+    @$body.addClass('guillotine-dragging')
     @$document.on events.move, @_drag
     @$document.on events.stop, @_unbind
 
 
   # Bind event handlers to self using '=>', prevents jQuery from setting 'this'.
   _unbind: (e) =>
+    @$body.removeClass('guillotine-dragging')
     @$document.off events.move, @_drag
-    @$document.off events.stop, @_unbind  # Unbind this very function (handler)
+    @$document.off events.stop, @_unbind   # Unbind this very function (handler)
     @_trigger('drag') if e?
 
 
@@ -247,9 +252,9 @@ class Guillotine
     @_offset left, top
 
 
-  _offset: (left, top) ->                   # left and top are relative numbers!
+  _offset: (left, top) ->                # left and top are relative numbers!
     # Offset left
-    if left || left == 0      # !!0 is false
+    if left || left == 0                 # 0 is falsy
       left = 0 if left < 0
       left = @width-1 if left > @width-1
       # (toFixed avoids scientific notation)
@@ -269,7 +274,7 @@ class Guillotine
 
   _zoom: (factor) ->
     return if factor <= 0 or factor == 1
-    [w, h] = [@width, @height]
+    w = @width; h = @height
 
     # Zoom
     if w * factor > 1 and h * factor > 1
