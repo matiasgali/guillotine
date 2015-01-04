@@ -125,10 +125,10 @@ class Guillotine
     @enabled = true
     @zoomInFactor = 1 + @op.zoomStep
     @zoomOutFactor = 1 / @zoomInFactor
-    [@width, @height, @left, @top, @angle] = [0, 0, 0, 0, 0]
+    @width = @height = @left = @top = @angle = 0
 
     # Transformation instructions
-    @data = {scale: 1, angle: 0, x: 0, y: 0, w: @op.width, h: @op.height}
+    @data = { scale: 1, angle: 0, x: 0, y: 0, w: @op.width, h: @op.height }
 
     # Markup
     @_wrap(element)
@@ -148,21 +148,22 @@ class Guillotine
     el = $(element)
 
     # Get image's real dimensions
-    if el.prop('tagName') is 'IMG'
-      # Helper image (full size image)
-      # Note: Assumes that the target image is already loaded (or cached).
-      img = document.createElement('img')
-      img.src = el.attr('src')
-      # Notice: width and height properties hold the dimensions even
-      # though the image hasn't been rendered or appended to the DOM.
-      [width, height] = [img.width, img.height]
+    if element.tagName is 'IMG'
+      if element.naturalWidth
+        width  = element.naturalWidth
+        height = element.naturalHeight
+      else
+        el.addClass('guillotine-sample')
+        width = el.width(); height = el.height()
+        el.removeClass('guillotine-sample')
     else
       # In case of mad experiments (SVGs, canvas, etc.).
-      [width, height] = [el.width(), el.height()]
+      width = el.width(); height = el.height()
 
     # Canvas
     ## Fullsize image dimensions relative to the restrictions.
-    [@width, @height] = [width/@op.width, height/@op.height]
+    @width = width/@op.width
+    @height= height/@op.height
     canvas = $('<div>').addClass('guillotine-canvas')
     canvas.css width: @width*100+'%', height: @height*100+'%', top: 0, left: 0
     canvas = el.wrap(canvas).parent()

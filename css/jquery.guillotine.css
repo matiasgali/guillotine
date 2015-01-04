@@ -26,3 +26,11 @@
   padding: 0 !important;
   border: none !important;
 }
+
+.guillotine-sample {
+  position: absolute !important;
+  top: -100000px     !important;
+  left: -100000px    !important;
+  width: auto        !important;
+  height: auto       !important;
+}

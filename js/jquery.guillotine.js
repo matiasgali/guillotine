@@ -110,12 +110,11 @@
       this._drag = __bind(this._drag, this);
       this._unbind = __bind(this._unbind, this);
       this._start = __bind(this._start, this);
-      var _ref;
       this.op = $.extend(true, {}, defaults, options, $(element).data(pluginName));
       this.enabled = true;
       this.zoomInFactor = 1 + this.op.zoomStep;
       this.zoomOutFactor = 1 / this.zoomInFactor;
-      _ref = [0, 0, 0, 0, 0], this.width = _ref[0], this.height = _ref[1], this.left = _ref[2], this.top = _ref[3], this.angle = _ref[4];
+      this.width = this.height = this.left = this.top = this.angle = 0;
       this.data = {
         scale: 1,
         angle: 0,
@@ -136,16 +135,24 @@
     }
 
     Guillotine.prototype._wrap = function(element) {
-      var canvas, el, guillotine, height, img, paddingTop, width, _ref, _ref1, _ref2;
+      var canvas, el, guillotine, height, paddingTop, width;
       el = $(element);
-      if (el.prop('tagName') === 'IMG') {
-        img = document.createElement('img');
-        img.src = el.attr('src');
-        _ref = [img.width, img.height], width = _ref[0], height = _ref[1];
+      if (element.tagName === 'IMG') {
+        if (element.naturalWidth) {
+          width = element.naturalWidth;
+          height = element.naturalHeight;
+        } else {
+          el.addClass('guillotine-sample');
+          width = el.width();
+          height = el.height();
+          el.removeClass('guillotine-sample');
+        }
       } else {
-        _ref1 = [el.width(), el.height()], width = _ref1[0], height = _ref1[1];
+        width = el.width();
+        height = el.height();
       }
-      _ref2 = [width / this.op.width, height / this.op.height], this.width = _ref2[0], this.height = _ref2[1];
+      this.width = width / this.op.width;
+      this.height = height / this.op.height;
       canvas = $('<div>').addClass('guillotine-canvas');
       canvas.css({
         width: this.width * 100 + '%',
