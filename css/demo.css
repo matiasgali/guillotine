@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 10px 20px;
+  font-family: "Helvetica Neue", Helvetica, "Open Sans", Arial, sans-serif;
   color: #333;
 }
 
@@ -41,7 +42,10 @@ body {
   #fork-me img { width: auto; }
 }
 
-h1 { margin-bottom: 30px; }
+h1 {
+  font-size: 36px;
+  margin-bottom: 30px;
+}
 
 h1 a {
   text-decoration: none;
@@ -60,7 +64,7 @@ h1 a:hover {
   color: #8a6d3b;
   font-size: 14px;
   line-height: 18px;
-  text-align: justify;
+  text-align: left;
 }
 
 .frame {
