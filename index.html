@@ -20,14 +20,16 @@
       </a>
     </h1>
 
-    <div class='notice'>
+    <p class='info loading'>Loading full-size image...</p>
+
+    <p class='notice hidden'>
       <strong>Drag</strong> the image to move it or <strong>resize</strong>
       the window to check its responsiveness.
-    </div>
+    </p>
 
     <div class='frame'><img id='sample_picture'></div>
 
-    <div id='controls'>
+    <div id='controls' class='hidden'>
       <a href='#' id='rotate_left'  title='Rotate left'><i class='fa fa-rotate-left'></i></a>
       <a href='#' id='zoom_out'     title='Zoom out'><i class='fa fa-search-minus'></i></a>
       <a href='#' id='fit'          title='Fit image'><i class='fa fa-arrows-alt'></i></a>
@@ -35,7 +37,7 @@
       <a href='#' id='rotate_right' title='Rotate right'><i class='fa fa-rotate-right'></i></a>
     </div>
 
-    <ul id='data'>
+    <ul id='data' class='hidden'>
       <div class='column'>
         <li>x: <span id='x'></span></li>
         <li>y: <span id='y'></span></li>

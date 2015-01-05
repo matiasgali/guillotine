@@ -1,22 +1,26 @@
 jQuery(function() {
   var picture = $('#sample_picture')
 
-  // Convert string to camel case
   var camelize = function() {
     var regex = /[\W_]+(.)/g
     var replacer = function (match, submatch) { return submatch.toUpperCase() }
     return function (str) { return str.replace(regex, replacer) }
   }()
 
-  // Init Guillotine after the image is loaded
+  var showData = function (data) {
+    data.scale = parseFloat(data.scale.toFixed(4))
+    for(var k in data) { $('#'+k).html(data[k]) }
+  }
+
   picture.on('load', function() {
     picture.guillotine({ eventOnChange: 'guillotinechange' })
     picture.guillotine('fit')
     for (var i=0; i<5; i++) { picture.guillotine('zoomIn') }
 
-    // Display inital data
-    var data = picture.guillotine('getData')
-    for (var k in data) { $('#'+k).html(data[k]) }
+    // Show controls and data
+    $('.loading').remove()
+    $('.notice, #controls, #data').removeClass('hidden')
+    showData( picture.guillotine('getData') )
 
     // Bind actions
     $('#controls a').click(function(e) {
@@ -26,10 +30,7 @@ jQuery(function() {
     })
 
     // Update data on change
-    picture.on('guillotinechange', function(ev, data, action) {
-      data.scale = parseFloat(data.scale.toFixed(4))
-      for(var k in data) { $('#'+k).html(data[k]) }
-    })
+    picture.on('guillotinechange', function(e, data, action) { showData(data) })
   })
 
   // Display random picture

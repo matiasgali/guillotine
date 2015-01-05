@@ -5,12 +5,17 @@ body {
   color: #333;
 }
 
-#content {
-  width: 100%;
-  max-width: 600px;
-  text-align: center;
-  background-color: #fff;
+@media (min-width: 600px) {
+  body {
+    background-color: #e7e7e7;
+    padding: 0;
+  }
 }
+
+
+/* Github
+ * ======
+ */
 
 #fork-me {
   position: absolute;
@@ -25,21 +30,56 @@ body {
 }
 
 @media (min-width: 600px) {
-  body {
-    background-color: #e7e7e7;
-    padding: 0;
-  }
+  #fork-me img { width: auto; }
+}
 
+
+/*  Alerts
+ *  ======
+ */
+
+.notice, .info {
+  margin-bottom: 10px;
+  padding: 5px 8px;
+  border: 2px solid transparent;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: left;
+}
+
+.notice {
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+  color: #8a6d3b;
+}
+
+.info {
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  color: #31708f;
+}
+
+
+/* Content
+ * =======
+ */
+
+#content {
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+  text-align: center;
+}
+
+@media (min-width: 600px) {
   #content {
     width: 60%;
     margin: 20px auto;
-    padding: 20px 40px 30px 40px;
+    padding: 20px 40px 40px 40px;
     -webkit-box-shadow: 0 0 20px 0 #999;
        -moz-box-shadow: 0 0 20px 0 #999;
             box-shadow: 0 0 20px 0 #999;
   }
-
-  #fork-me img { width: auto; }
 }
 
 h1 {
@@ -56,26 +96,22 @@ h1 a:hover {
   text-decoration: underline;
 }
 
-.notice {
-  margin-bottom: 10px;
-  padding: 5px 8px;
-  border: 2px solid #faebcc;
-  background-color: #fcf8e3;
-  color: #8a6d3b;
-  font-size: 14px;
-  line-height: 18px;
-  text-align: left;
-}
-
 .frame {
   border: 1px solid #ccc;
   padding: 5px;
 }
 
-.frame > img { width: 100%; }
+.frame > img {
+  display: block;
+  width: 100%;
+}
+
+
+/* Controls
+ * ========
+ */
 
 #controls {
-  margin-bottom: 40px;
   background-color: #1b1b1b;
   text-align: center;
 }
@@ -95,11 +131,17 @@ h1 a:hover {
   text-decoration: none;
 }
 
+
+/* Data
+ * ====
+ */
+
 #data {
-  list-style: none;
   display: inline-block;
+  list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 40px 0 0 0;
+  text-align: left;
 }
 
 #data .column {
@@ -110,10 +152,16 @@ h1 a:hover {
 #data li {
   margin-bottom: 10px;
   font-weight: bold;
-  text-align: left;
 }
 
 #data span {
   display: inline-block;
   font-weight: normal;
 }
+
+
+/* Misc
+ * ====
+ */
+
+.hidden { display: none !important; }
