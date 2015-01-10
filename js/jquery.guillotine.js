@@ -312,6 +312,22 @@
       return this._offset((this.width - 1) / 2, (this.height - 1) / 2);
     };
 
+    Guillotine.prototype._alignTop = function() {
+      return this._offset((this.width - 1) / 2, 0);
+    };
+
+    Guillotine.prototype._alignBottom = function() {
+      return this._offset((this.width - 1) / 2, this.height - 1);
+    };
+
+    Guillotine.prototype._alignLeft = function() {
+      return this._offset(0, (this.height - 1) / 2);
+    };
+
+    Guillotine.prototype._alignRight = function() {
+      return this._offset((this.width - 1), (this.height - 1) / 2);
+    };
+
     Guillotine.prototype._rotate = function(angle) {
       var canvasRatio, glltRatio, h, w, _ref, _ref1, _ref2;
       if (!canTransform()) {
@@ -366,6 +382,22 @@
       return this.enabled && (this._fit(), this._center(), this._trigger('fit'));
     };
 
+    Guillotine.prototype.alignTop = function() {
+      return this.enabled && (this._alignTop(), this._trigger('alignTop'));
+    };
+
+    Guillotine.prototype.alignBottom = function() {
+      return this.enabled && (this._alignBottom(), this._trigger('alignBottom'));
+    };
+
+    Guillotine.prototype.alignLeft = function() {
+      return this.enabled && (this._alignLeft(), this._trigger('alignLeft'));
+    };
+
+    Guillotine.prototype.alignRight = function() {
+      return this.enabled && (this._alignRight(), this._trigger('alignRight'));
+    };
+
     Guillotine.prototype.zoomIn = function() {
       return this.enabled && (this._zoom(this.zoomInFactor), this._trigger('zoomIn'));
     };
@@ -398,7 +430,7 @@
 
   })();
 
-  whitelist = ['rotateLeft', 'rotateRight', 'center', 'fit', 'zoomIn', 'zoomOut', 'instance', 'getData', 'enable', 'disable', 'remove'];
+  whitelist = ['rotateLeft', 'rotateRight', 'center', 'fit', 'zoomIn', 'zoomOut', 'instance', 'getData', 'enable', 'disable', 'remove', 'alignTop', 'alignBottom', 'alignLeft', 'alignRight'];
 
   $.fn[pluginName] = function(options) {
     if (typeof options !== 'string') {
