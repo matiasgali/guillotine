@@ -312,20 +312,20 @@
       return this._offset((this.width - 1) / 2, (this.height - 1) / 2);
     };
 
-    Guillotine.prototype._alignTop = function() {
-      return this._offset((this.width - 1) / 2, 0);
-    };
-
-    Guillotine.prototype._alignBottom = function() {
-      return this._offset((this.width - 1) / 2, this.height - 1);
-    };
-
     Guillotine.prototype._alignLeft = function() {
       return this._offset(0, (this.height - 1) / 2);
     };
 
+    Guillotine.prototype._alignTop = function() {
+      return this._offset((this.width - 1) / 2, 0);
+    };
+
     Guillotine.prototype._alignRight = function() {
-      return this._offset((this.width - 1), (this.height - 1) / 2);
+      return this._offset(this.width - 1, (this.height - 1) / 2);
+    };
+
+    Guillotine.prototype._alignBottom = function() {
+      return this._offset((this.width - 1) / 2, this.height - 1);
     };
 
     Guillotine.prototype._rotate = function(angle) {
@@ -378,24 +378,24 @@
       return this.enabled && (this._center(), this._trigger('center'));
     };
 
-    Guillotine.prototype.fit = function() {
-      return this.enabled && (this._fit(), this._center(), this._trigger('fit'));
+    Guillotine.prototype.alignLeft = function() {
+      return this.enabled && (this._alignLeft(), this._trigger('alignLeft'));
     };
 
     Guillotine.prototype.alignTop = function() {
       return this.enabled && (this._alignTop(), this._trigger('alignTop'));
     };
 
+    Guillotine.prototype.alignRight = function() {
+      return this.enabled && (this._alignRight(), this._trigger('alignRight'));
+    };
+
     Guillotine.prototype.alignBottom = function() {
       return this.enabled && (this._alignBottom(), this._trigger('alignBottom'));
     };
 
-    Guillotine.prototype.alignLeft = function() {
-      return this.enabled && (this._alignLeft(), this._trigger('alignLeft'));
-    };
-
-    Guillotine.prototype.alignRight = function() {
-      return this.enabled && (this._alignRight(), this._trigger('alignRight'));
+    Guillotine.prototype.fit = function() {
+      return this.enabled && (this._fit(), this._center(), this._trigger('fit'));
     };
 
     Guillotine.prototype.zoomIn = function() {
@@ -430,7 +430,7 @@
 
   })();
 
-  whitelist = ['rotateLeft', 'rotateRight', 'center', 'fit', 'zoomIn', 'zoomOut', 'instance', 'getData', 'enable', 'disable', 'remove', 'alignTop', 'alignBottom', 'alignLeft', 'alignRight'];
+  whitelist = ['rotateLeft', 'rotateRight', 'center', 'alignLeft', 'alignTop', 'alignRight', 'alignBottom', 'fit', 'zoomIn', 'zoomOut', 'instance', 'getData', 'enable', 'disable', 'remove'];
 
   $.fn[pluginName] = function(options) {
     if (typeof options !== 'string') {
