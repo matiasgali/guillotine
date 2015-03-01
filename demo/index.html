@@ -48,7 +48,7 @@
   <script type='text/javascript'>
     jQuery(function() {
       var picture = $('#sample_picture');
-      picture.on('load', function(){
+      picture.one('load', function(){
         // Initialize plugin (with custom event)
         picture.guillotine({eventOnChange: 'guillotinechange'});
 
@@ -68,6 +68,8 @@
           data.scale = parseFloat(data.scale.toFixed(4));
           for(var k in data) { $('#'+k).html(data[k]); }
         });
+      }).each(function() {
+        if(this.complete) $(this).load();
       });
     });
   </script>
