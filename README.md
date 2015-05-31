@@ -3,7 +3,7 @@ jQuery Guillotine Plugin
 
 Demo
 ----
-<http://matiasgagliano.github.io/guillotine>
+<http://guillotine.js.org>
 
 
 Description
