@@ -359,6 +359,7 @@ class Guillotine
     @el.style.top = (1 - h) / 2 * 100 + '%'
 
     # Rotate
+    # Since jQuery 1.8.0 '.css()' adds vendor prefixes
     @$el.css transform: "rotate(#{@angle}deg)"
     @_center()
     @data.angle = @angle
