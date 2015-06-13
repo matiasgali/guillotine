@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <title>jQuery Guillotine plugin</title>
+  <link href='css/jquery.guillotine.css' media='all' rel='stylesheet'>
+  <link href='css/demo.min.css' media='all' rel='stylesheet'>
+  <link href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, target-densitydpi=device-dpi'>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--[if lt IE 9]>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js'></script>
+  <![endif]-->
+</head>
+<body>
+  <div id='content'>
+    <h1>
+      <a id='github' href='//github.com/matiasgagliano/guillotine' target='_blank'>
+        jQuery Guillotine
+      </a>
+    </h1>
+
+    <p class='info loading'>Loading full-size image...</p>
+
+    <p class='notice hidden'>
+      <strong>Drag</strong> the image to move it or <strong>resize</strong>
+      the window to check its responsiveness.
+    </p>
+
+    <div class='frame'><img id='sample_picture'></div>
+
+    <div id='controls' class='hidden'>
+      <a href='#' id='rotate_left'  title='Rotate left'><i class='fa fa-rotate-left'></i></a>
+      <a href='#' id='zoom_out'     title='Zoom out'><i class='fa fa-search-minus'></i></a>
+      <a href='#' id='fit'          title='Fit image'><i class='fa fa-arrows-alt'></i></a>
+      <a href='#' id='zoom_in'      title='Zoom in'><i class='fa fa-search-plus'></i></a>
+      <a href='#' id='rotate_right' title='Rotate right'><i class='fa fa-rotate-right'></i></a>
+    </div>
+
+    <ul id='data' class='hidden'>
+      <div class='column'>
+        <li>x: <span id='x'></span></li>
+        <li>y: <span id='y'></span></li>
+      </div>
+      <div class='column'>
+        <li>width:  <span id='w'></span></li>
+        <li>height: <span id='h'></span></li>
+      </div>
+      <div class='column'>
+        <li>scale: <span id='scale'></span></li>
+        <li>angle: <span id='angle'></span></li>
+      </div>
+    </ul>
+  </div>
+
+  <a id='fork-me' href='//github.com/matiasgagliano/guillotine' target='_blank'>
+    <img alt='Fork me on GitHub' src="//s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png">
+  </a>
+
+  <script src='//code.jquery.com/jquery-1.11.2.min.js'></script>
+  <script src='js/jquery.guillotine.min.js'></script>
+  <script src='js/demo.js'></script>
+</body>
+</html>
