@@ -1,6 +1,19 @@
 Changelog
 =========
 
+1.3.1
+-----
+
+**Features:**
+
+- Add npm support (#40).
+
+
+**Bugfixes:**
+
+- Update jQuery minimum version to 1.8.0.
+
+
 1.3.0
 -----
 

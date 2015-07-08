@@ -1,6 +1,8 @@
 jQuery Guillotine Plugin
 ========================
 
+[![NPM](https://nodei.co/npm/guillotine.png?mini=true)](https://npmjs.org/package/guillotine)
+
 Demo
 ----
 <http://guillotine.js.org>
