@@ -48,7 +48,9 @@
   <script type='text/javascript'>
     jQuery(function() {
       var picture = $('#sample_picture');
-      picture.on('load', function(){
+
+      // Make sure the image is completely loaded before calling the plugin
+      picture.one('load', function(){
         // Initialize plugin (with custom event)
         picture.guillotine({eventOnChange: 'guillotinechange'});
 
@@ -69,6 +71,9 @@
           for(var k in data) { $('#'+k).html(data[k]); }
         });
       });
+
+      // Make sure the 'load' event is triggered at least once (for cached images)
+      if (picture.prop('complete')) picture.trigger('load')
     });
   </script>
 </body>
