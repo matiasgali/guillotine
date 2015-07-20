@@ -95,7 +95,7 @@ Setup
           // this = current element
           // ev = event object
           // data = { scale: 1.4, angle: 270, x: 10, y: 20, w: 400, h: 300 }
-          // action = drag/rot')eLeft/rotateRight/center/fit/zoomIn/zoomOut
+          // action = drag/rotateLeft/rotateRight/center/fit/zoomIn/zoomOut
           // Save data on hidden inputs...
         });
         ```
