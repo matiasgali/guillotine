@@ -35,7 +35,8 @@
     zoomStep: 0.1,
     init: null,
     eventOnChange: null,
-    onChange: null
+    onChange: null,
+    filter: null
   };
 
   touchRegExp = /touch/i;
@@ -133,6 +134,10 @@
       }
       hardwareAccelerate(this.$el);
       this.$el.on(events.start, this._start);
+
+      if(this.op.filter != null && this.op.filter.length>0){
+	  this.op.filter.on(events.start, this._start).removeClass('guillotine-window').addClass('guillotine-window');
+      }
     }
 
     Guillotine.prototype._wrap = function(element) {
