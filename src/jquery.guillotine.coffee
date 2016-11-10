@@ -130,7 +130,7 @@ class Guillotine
     @width = @height = @left = @top = @angle = 0
 
     # Transformation instructions
-    @data = { scale: 1, angle: 0, x: 0, y: 0, w: @op.width, h: @op.height }
+    @data = { scale: 1, angle: 0, x: 0, y: 0, w: @op.width, h: @op.height, minScale: 1, zoomStep: +@op.zoomStep.toFixed(2), maxScale: +@op.maxScale.toFixed(2)}
 
     # Markup
     @_wrap(element)
@@ -169,6 +169,13 @@ class Guillotine
     canvas = $('<div>').addClass('guillotine-canvas')
     canvas.css width: @width*100+'%', height: @height*100+'%', top: 0, left: 0
     canvas = el.wrap(canvas).parent()
+    
+    # Store additional data for zooming
+    @widthReal = width
+    @heightReal = height
+    @widthOrig = @width     #0-1
+    @heightOrig = @height   #0-1
+    @data.minScale = +(Math.max.apply @, [@op.width/@widthReal, @op.height/@heightReal]).toFixed(2)
 
     # Guillotine (window)
     ## Responsive with fixed aspect ratio.
@@ -276,6 +283,7 @@ class Guillotine
     return if factor <= 0 or factor == 1
     w = @width; h = @height
 
+    return if @op.maxScale and @data.scale * factor > @op.maxScale
     # Zoom
     if w * factor > 1 and h * factor > 1
       @width  *= factor
@@ -301,6 +309,12 @@ class Guillotine
     left = (@left + 0.5) * factor - 0.5
     top  = (@top + 0.5) * factor - 0.5
     @_offset left, top
+
+    
+  _zoomScale: (scale) ->
+    scale = parseFloat(scale);
+    factor = scale / @data.scale;
+    @_zoom factor
 
 
   # Adjust the element (canvas) to the edges of the window keeping aspect ratio.
@@ -329,9 +343,15 @@ class Guillotine
     # Smallest positive equivalent angle (total rotation)
     @angle = (@angle + angle) % 360
     @angle = 360 + @angle if @angle < 0
-
+    
     # Different dimensions?
     if (angle % 180 isnt 0)
+      # Calc new min scale
+      w = @widthReal ; h = @heightReal
+      if @angle % 180 isnt 0 
+        [w,h] = [h,w]
+      @data.minScale = +(Math.max.apply @, [@op.width/w, @op.height/h]).toFixed(2)
+
       # Switch canvas dimensions (as percentages)
       #
       # canvasWidth = @width * glltWidth; canvasHeight = @height * glltHeigth
@@ -375,6 +395,7 @@ class Guillotine
   fit:         -> @enabled and (@_fit(); @_center();    @_trigger('fit'))
   zoomIn:      -> @enabled and (@_zoom(@zoomInFactor);  @_trigger('zoomIn'))
   zoomOut:     -> @enabled and (@_zoom(@zoomOutFactor); @_trigger('zoomOut'))
+  zoomCustom:(f) -> @enabled and (@_zoomScale(f); @_trigger('zoomCustom'))
 
   # Utilities
   getData: -> @data
@@ -392,10 +413,10 @@ class Guillotine
 #           The Plugin
 # ______________________________
 #
-whitelist = ['rotateLeft', 'rotateRight', 'center', 'fit', 'zoomIn', 'zoomOut', \
+whitelist = ['rotateLeft', 'rotateRight', 'center', 'fit', 'zoomIn', 'zoomOut', 'zoomCustom', \
              'instance', 'getData', 'enable', 'disable', 'remove']
 
-$.fn[pluginName] = (options) ->
+$.fn[pluginName] = (options, param) ->
   # Plug it! Lightweight plugin wrapper around the constructor.
   if typeof options isnt 'string'
     @each ->
@@ -412,4 +433,4 @@ $.fn[pluginName] = (options) ->
     return $.data(@[0], pluginName+'Instance')[options]() if options is 'getData'
     @each ->
       guillotine = $.data(@, pluginName + 'Instance')
-      guillotine[options]() if guillotine
+      guillotine[options](param) if guillotine

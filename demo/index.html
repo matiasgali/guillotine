@@ -25,6 +25,8 @@
       <button id='fit'          type='button' title='Fit image'> [ ]  </button>
       <button id='zoom_in'      type='button' title='Zoom in'> + </button>
       <button id='rotate_right' type='button' title='Rotate right'> &gt; </button>
+      <br><br> Custom zoom:
+      <br> <input id='custom_zoom' type='range' min='0' max='2' value='1' step='0.01'>
     </div>
 
     <ul id='data'>
@@ -52,22 +54,41 @@
       // Make sure the image is completely loaded before calling the plugin
       picture.one('load', function(){
         // Initialize plugin (with custom event)
-        picture.guillotine({eventOnChange: 'guillotinechange'});
+        picture.guillotine({eventOnChange: 'guillotinechange', maxScale:2});
 
         // Display inital data
         var data = picture.guillotine('getData');
+        console.log(data);
         for(var key in data) { $('#'+key).html(data[key]); }
 
         // Bind button actions
-        $('#rotate_left').click(function(){ picture.guillotine('rotateLeft'); });
-        $('#rotate_right').click(function(){ picture.guillotine('rotateRight'); });
-        $('#fit').click(function(){ picture.guillotine('fit'); });
-        $('#zoom_in').click(function(){ picture.guillotine('zoomIn'); });
-        $('#zoom_out').click(function(){ picture.guillotine('zoomOut'); });
+        $('#rotate_left').click(function(){ 
+            picture.guillotine('rotateLeft'); 
+            $("#custom_zoom").prop({min:data.minScale});
+        });
+        $('#rotate_right').click(function(){ 
+            picture.guillotine('rotateRight'); 
+            $("#custom_zoom").prop({min:data.minScale});
+        });
+        $('#fit').click(function(){ 
+            picture.guillotine('fit'); 
+            $('#custom_zoom')[0].value = data.scale;
+        });
+        $('#zoom_in').click(function(){ 
+            picture.guillotine('zoomIn');
+            $('#custom_zoom')[0].value -= -data.zoomStep;
+        });
+        $('#zoom_out').click(function(){ 
+            picture.guillotine('zoomOut'); 
+            $('#custom_zoom')[0].value -= +data.zoomStep;
+        });
+		
+		$("#custom_zoom").prop({min:data.minScale, max:data.maxScale, value:data.scale}).on("input change", function(){ picture.guillotine('zoomCustom', $(this).val()); });
 
         // Update data on change
         picture.on('guillotinechange', function(ev, data, action) {
           data.scale = parseFloat(data.scale.toFixed(4));
+          data.minScale = parseFloat(data.minScale.toFixed(4));
           for(var k in data) { $('#'+k).html(data[k]); }
         });
       });
