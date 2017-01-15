@@ -11,13 +11,23 @@
  *
  */
 
-(function() {
+ (function (factory) {
+     if (typeof define === 'function' && define.amd) {
+         // AMD. Register as an anonymous module.
+         define(['jquery'], factory);
+     } else if (typeof exports === 'object') {
+         // Node/CommonJS
+         module.exports = factory(require('jquery'));
+     } else {
+         // Browser globals
+         factory(jQuery);
+     }
+ }
+(function($) {
   "use strict";
-  var $, Guillotine, canTransform, defaults, events, getPointerPosition, hardwareAccelerate, isTouch, pluginName, scope, touchRegExp, validEvent, whitelist,
+  var Guillotine, canTransform, defaults, events, getPointerPosition, hardwareAccelerate, isTouch, pluginName, scope, touchRegExp, validEvent, whitelist,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  $ = jQuery;
 
   pluginName = 'guillotine';
 
@@ -426,4 +436,4 @@
     }
   };
 
-}).call(this);
+}));
