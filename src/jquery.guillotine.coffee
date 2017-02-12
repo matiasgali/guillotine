@@ -321,6 +321,14 @@ class Guillotine
 
   _center: -> @_offset (@width-1)/2, (@height-1)/2
 
+  _alignLeft: -> @_offset 0, (@height-1)/2
+
+  _alignTop: -> @_offset (@width-1)/2, 0
+
+  _alignRight: -> @_offset (@width-1), (@height-1)/2
+
+  _alignBottom: -> @_offset (@width-1)/2, (@height-1)
+
 
   _rotate: (angle) ->
     return unless canTransform()
@@ -372,6 +380,10 @@ class Guillotine
   rotateLeft:  -> @enabled and (@_rotate(-90);          @_trigger('rotateLeft'))
   rotateRight: -> @enabled and (@_rotate(90);           @_trigger('rotateRight'))
   center:      -> @enabled and (@_center();             @_trigger('center'))
+  alignLeft:   -> @enabled and (@_alignLeft();          @_trigger('alignLeft'))
+  alignTop:    -> @enabled and (@_alignTop();           @_trigger('alignTop'))
+  alignRight:  -> @enabled and (@_alignRight();         @_trigger('alignRight'))
+  alignBottom: -> @enabled and (@_alignBottom();        @_trigger('alignBottom'))
   fit:         -> @enabled and (@_fit(); @_center();    @_trigger('fit'))
   zoomIn:      -> @enabled and (@_zoom(@zoomInFactor);  @_trigger('zoomIn'))
   zoomOut:     -> @enabled and (@_zoom(@zoomOutFactor); @_trigger('zoomOut'))
@@ -392,8 +404,8 @@ class Guillotine
 #           The Plugin
 # ______________________________
 #
-whitelist = ['rotateLeft', 'rotateRight', 'center', 'fit', 'zoomIn', 'zoomOut', \
-             'instance', 'getData', 'enable', 'disable', 'remove']
+whitelist = ['rotateLeft', 'rotateRight', 'center', 'alignLeft', 'alignTop', 'alignRight', 'alignBottom', \
+             'fit', 'zoomIn', 'zoomOut', 'instance', 'getData', 'enable', 'disable', 'remove']
 
 $.fn[pluginName] = (options) ->
   # Plug it! Lightweight plugin wrapper around the constructor.
