@@ -48,6 +48,10 @@ body {
 
 #controls button:hover { color: #333; }
 
+#controls input[type="range"]{
+    width:100%;
+}
+
 #data {
   list-style: none;
   display: inline-block;
