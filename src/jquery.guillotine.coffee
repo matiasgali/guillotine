@@ -151,7 +151,11 @@ class Guillotine
 
     # Get image's real dimensions
     if element.tagName is 'IMG'
-      if element.naturalWidth
+      # Forced image params 
+      if element.width and element.height
+        width  = element.width
+        height = element.height
+      else if element.naturalWidth
         width  = element.naturalWidth
         height = element.naturalHeight
       else
